@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+	<head>
+		<meta charset="UTF-8">
+		<title>MyPIZZA</title>
+		<!-- Bootstrap CSS -->
+		<link th:rel="stylesheet" th:href="@{/webjars/bootstrap/5.1.3/css/bootstrap.min.css}"/>
+	</head>
+	<body>
+		<header th:insert="frag :: header-nav"></header>
+		
+		<main>
+		<!-- visuallizazzione di errori -->
+			<div class="container border mt-5 p-3 text-danger" th:if="${errors}" >
+				<div th:each="error : ${errors}" th:object="${error}">
+					<p th:text="*{defaultMessage}"></p>
+				</div>
+			</div>
+			<!-- form per la compilazione dei record -->
+			<form class="container border mt-5 p-3" method="POST" action="admin/promotion/store" th:object="${promotion}" th:insert="frag :: form-crud-promotion">
+				
+			</form>
+		
+			
+		</main>
+		
+	</body>
+</html>

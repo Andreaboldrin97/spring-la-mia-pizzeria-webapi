@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+	<head>
+		<meta charset="UTF-8">
+		<title>MyPIZZA</title>
+		<!-- Bootstrap CSS -->
+		<link th:rel="stylesheet" th:href="@{/webjars/bootstrap/5.1.3/css/bootstrap.min.css}"/>
+	</head>
+	<body>
+		<header th:insert="frag :: header-nav"></header>
+		
+		<main>
+			<h1 class="text-center my-5">ALL MY.. PIZZA</h1>
+			
+			<div class="d-flex justify-content-center">
+				<table class="table table-dark table-hover container ">
+				  <thead>
+				    <tr>
+				      <th scope="col">ID</th>
+				      <th scope="col">NOME</th>
+				      <th scope="col">PIZZA NOME</th>
+				      <th scope="col">
+				      	<a class="btn btn-primary" th:href="@{admin/ingredient/create}" sec:authorize="hasAuthority('admin')">Create Ingredient</a>
+				      </th>
+				    </tr>
+				  </thead>
+				  <tbody>
+				    <tr th:each="ingredient : ${ingredients}" th:object="${ingredient}" th:if="${ingredients.size() > 0}">
+				      <th scope="row" th:text="*{id}"></th>
+				      <td th:text="*{name}"></td>
+				       <td>
+				       		<div
+				       		th:each="pizza : ${ingredient.getPizza()}"
+				       		th:object="${pizza}"
+				       		th:text="*{name}">
+				       		</div>
+				       </td>
+				      <td sec:authorize="hasAuthority('admin')">
+				      	<a class="btn btn-primary" th:href="@{admin/ingredient/edit/{id} (id = *{id})}" >Edit</a>
+					  	<a class="btn btn-danger"th:href="@{admin/ingredient/delete/{id} (id = *{id})}">Delete</a>
+					  </td>
+				    </tr>
+				  </tbody>
+				</table>
+			</div>
+			<h1 class="text-center"  th:unless="${ingredients.size() > 0}"> NON sono presenti ingredienti</h1>
+			
+		</main>
+		
+	</body>
+</html>
