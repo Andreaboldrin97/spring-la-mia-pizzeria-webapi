@@ -1,6 +1,15 @@
 <template>
   <div>
-      <h1 >ALL MY PIZZA VUE</h1>
+      <div class="d-flex justify-content-center">
+        <h1 >ALL MY PIZZA VUE</h1>
+        <div class="ms-5">
+            <div class="d-flex" role="search">
+                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" v-model="query">
+                <button class="btn btn-outline-success" type="submit" @click="getSearchPizza" >Search</button>
+            </div>
+      </div>
+
+      </div>
       <div class="mx-3">
           <table class="table table-dark table-hover">
             <thead>
@@ -102,10 +111,26 @@ export default {
        pizza_create : {},
        createBoolean: false,
        editBoolean: false,
+       query : '',
     };
   },
   methods: {
       //!PIZZA METHODS
+    getPizzas(){
+        //recuperiamo tutte le pizze
+        axios.get(API_URL + '/pizza/all')
+            .then(res => {
+        
+                const allPizza = res.data;
+                //se la pizza è null blocca l'eseguzione
+                if (allPizza == null) return;
+                this.pizzas = allPizza;
+                console.log(this.pizzas);
+            }).catch(error => {
+                console.log(error)
+            });
+    },
+       
     //metodo che recupera' l'index della pizza 
     getPizzaIndexById(id) {
         for (let x=0; x<this.pizzas.length; x++) {
@@ -173,6 +198,21 @@ export default {
             console.log(error)
             });
     },
+    //? query api
+    getSearchPizza(){
+        if(this.query == ""){
+            this.getPizzas();
+        }
+        axios.get(API_URL + '/pizza/search/'+ this.query )
+         .then(res => {
+             const allPizza = res.data;
+            //se la pizza è null blocca l'eseguzione
+            if (allPizza == null) return;
+            this.pizzas = allPizza;   
+        }).catch(error => {
+            console.log(error)
+            });
+    },
     //!INGREDIENT METHODS
      getIngredients(pizzaId) {
       axios.get(API_URL + "/ingredient/by/pizza/" + pizzaId)
@@ -197,19 +237,8 @@ export default {
   },
     mounted() {
      //!PIZZA METHODS
-    //recuperiamo tutte le pizze
-     axios.get(API_URL + '/pizza/all')
-          .then(res => {
-     
-         const allPizza = res.data;
-         //se la pizza è null blocca l'eseguzione
-         if (allPizza == null) return;
-         this.pizzas = allPizza;
-         console.log(this.pizzas);
-    }).catch(error => {
-          console.log(error)
-        });
-  }
+        this.getPizzas();
+    }
   
 }
 </script>

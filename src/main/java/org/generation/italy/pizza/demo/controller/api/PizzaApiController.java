@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.validation.Valid;
@@ -51,8 +52,7 @@ public class PizzaApiController {
 	
 	@GetMapping("/delete/{id}")
 	public Boolean deletePizza(@PathVariable("id") int id) {
-		
-		
+			
 		try {
 			//prendiamo la pizza che si trova nel db
 			Pizza pizza = pizzaService.findPizzaByID(id).get();
@@ -63,6 +63,14 @@ public class PizzaApiController {
 		
 		return true;
 		
+	}
+	
+	@GetMapping("/search/{query}")
+	public List<Pizza> getSearchPizza(@PathVariable("query") String query) {
+		
+		//assegnamo ad un lista i record del db
+		List<Pizza> allPizza = query == null ? pizzaService.findAll() : pizzaService.findByName(query);
+		return allPizza ;
 	}
 
 }
