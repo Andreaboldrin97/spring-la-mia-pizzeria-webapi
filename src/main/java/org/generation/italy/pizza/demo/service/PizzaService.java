@@ -18,10 +18,10 @@ public class PizzaService {
 	private PizzaRepo pizzaRepo;
 	
 	//funzione per salvare/inserire un record
-	public void save(Pizza pizza) {
+	public Pizza save(Pizza pizza) {
 		
 		//grazie all'interfaccia JpaRepository possiamo usare il method save
-		pizzaRepo.save(pizza);
+		return pizzaRepo.save(pizza);
 	}
 	
 	//funzione per prendere tutti i record

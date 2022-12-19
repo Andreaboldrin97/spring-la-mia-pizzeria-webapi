@@ -7,8 +7,12 @@ import org.generation.italy.pizza.demo.service.PizzaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/1/pizza")
@@ -23,5 +27,12 @@ public class PizzaApiController {
 		
 		List<Pizza> allPizza = pizzaService.findAll();
 		return allPizza ;
+	}
+	
+	@PostMapping("/create")
+	public Pizza createPizza(@Valid @RequestBody Pizza pizza) {
+		
+		System.err.println(pizza);
+		return pizzaService.save(pizza);
 	}
 }

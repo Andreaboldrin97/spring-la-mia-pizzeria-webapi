@@ -19,7 +19,7 @@ public class SecurityConf {
 	@Bean
 	public SecurityFilterChain getFilterChain(HttpSecurity http) throws Exception {
 		
-		http.authorizeHttpRequests()	
+		http.csrf().disable().authorizeHttpRequests()	
 				//indichiamo in base al path il role che potra accedere
 				.requestMatchers("/user", "/user/**").hasAuthority("user")
 				.requestMatchers("/admin", "/admin/**").hasAuthority("admin")
