@@ -3,6 +3,8 @@ package org.generation.italy.pizza.demo.pojo;
 import java.util.Arrays;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -25,6 +27,7 @@ public class Ingredient {
 	
 	//creiamo la relazione con la promozzioni con le pizze
 	@ManyToMany(mappedBy = "ingredients")
+	@JsonIgnore
 	private List<Pizza> pizza;
 	
 	//COSTRUCTS
