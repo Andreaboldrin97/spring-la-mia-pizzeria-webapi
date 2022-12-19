@@ -10,26 +10,29 @@
                     <th scope="col">DESCRIZIONE</th>
                     <th scope="col">PREZZO</th>
                     <th scope="col"></th>
+                     <th scope="col"></th>
                     <th scope="col">
-                        <button class="btn btn-success">CREA PIZZA</button>
+                        <button class="btn btn-success" @click="createBoolean = true" v-if="!createBoolean">CREA PIZZA</button>
+                        <div class="bg-dark text-white" v-else>
+                            <form @submit="createNewPizza" class="w-100">
+                                CREA UNA NUOVA PIZZA..
+                                <div class="mb-3">
+                                    <label class="form-label">Nome pizza</label>
+                                    <input class="form-control" type="text" name="name" v-model="pizza_create.name">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Descrizione pizza</label>
+                                    <input class="form-control" type="text" name="description" v-model="pizza_create.description">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Prezzo pizza</label>
+                                    <input class="form-control" type="number" name="price" v-model="pizza_create.price">
+                                </div>
+                                <input type="submit" value="save" class="btn btn-success">
+                            </form>
+                        </div>
                     </th>
-                    <div class="bg-dark text-white">
-                        <form @submit="createNewPizza" class="w-100">
-                        <div class="mb-3">
-                                <label class="form-label">Nome pizza</label>
-                                <input class="form-control" type="text" name="name" v-model="pizza_create.name">
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Descrizione pizza</label>
-                                <input class="form-control" type="text" name="description" v-model="pizza_create.description">
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Prezzo pizza</label>
-                                <input class="form-control" type="number" name="price" v-model="pizza_create.price">
-                            </div>
-                            <input type="submit" value="save" class="btn btn-success">
-                        </form>
-                    </div>
+                   
                 </tr>
             </thead>
             <tbody>
@@ -39,15 +42,22 @@
                     <td>{{ pizza.description }}</td>
                     <td>{{ pizza.price }}</td>
                     <td>
-                        <button   class="btn btn-warning" @click="getIngredienti(pizza.id)">INGREDIENTI</button>
-                        <div class="text-white" v-for="ingredient in pizza.ingredients" :key="ingredient.id">
-                           ciao <h1>{{ ingredient.name }}</h1>
-                        </div>
+                        <ul class="card-text mb-2" v-if="pizza.ingredients">
+                            <div v-if="pizza.ingredients.length > 0">
+                                <li v-for="ingredient in pizza.ingredients" :key="ingredient.id">{{ ingredient.name }} </li>
+                            </div>
+                            <div v-else>
+                                non sono presenti ingredienti
+                            </div>
+                        </ul>
+                        <button v-else @click="getIngredients(pizza.id)" class="btn btn-success me-1">Ingredienti</button>              
                     </td>
                     <td>
                          <button class="btn btn-danger" @click="deletePizza(pizza.id)">DELETE</button>
                     </td>
-                        <div class="bg-dark text-white">
+                    <td>
+                        <button class="btn btn-primary" @click="editBoolean = true" v-if="!editBoolean">EDIT</button>
+                        <div class="bg-dark text-white" v-else>
                             <form @submit="updatePizza" class="w-100">
                             <div class="mb-3">
                                     <label class="form-label">Nome pizza</label>
@@ -61,9 +71,11 @@
                                     <label class="form-label">Prezzo pizza</label>
                                     <input class="form-control" type="number" name="price" v-model="pizza.price">
                                 </div>
-                                <input type="submit" value="save" class="btn btn-success" @click="editPizza(pizza.id)">
+                                <input type="submit" value="EDIT" class="btn btn-primary" @click="editPizza(pizza.id)">
                             </form>
                         </div>
+                    </td>
+                        
                 </tr>
                 
             </tbody>
@@ -74,6 +86,7 @@
 </template>
 
 <script>
+ //import Vue from 'vue'
 //importiamo axios
 import axios from 'axios';
 //costabte url
@@ -87,6 +100,8 @@ export default {
        pizzas : [],
        pizza_id : PIZZA_ID,
        pizza_create : {},
+       createBoolean: false,
+       editBoolean: false,
     };
   },
   methods: {
@@ -117,7 +132,9 @@ export default {
                 if (pizza == null) return;
                 //aggiungiamo l'elemento all'array
                 this.pizzas.push(pizza)
-            })
+            }).catch(error => {
+          console.log(error)
+        })
     },
 
     //metodo per modificare 
@@ -138,7 +155,8 @@ export default {
             const pizza = res.data;
             pizza.ingredients = oldPizza.ingredients;
             this.pizzas[index] = pizza;
-
+        }).catch(error => {
+          console.log(error)
         })
     },
     //metodo per eliminare il record
@@ -151,21 +169,31 @@ export default {
             //eliminiamo la pizza dall'array senza ricaricare la pagina
             const index = this.getPizzaIndexById(id);
             this.pizzas.splice(index, 1);
-      });
+        }).catch(error => {
+            console.log(error)
+            });
     },
     //!INGREDIENT METHODS
-     getIngredienti(id) {
-      axios.get(API_URL + '/ingredienti/by/pizza/' + id)
-           .then(res => {
-            //ritorniamo l'ingredienti associati
-            const ingredients = res.data;
-            
-            if (ingredients == null) return;
-            const index = this.getPizzaIndexById(id);
-            this.pizzas[index].ingredients = ingredients;
-            
-        });
-     }
+     getIngredients(pizzaId) {
+      axios.get(API_URL + "/ingredient/by/pizza/" + pizzaId)
+        .then(response => {
+            const ingredients = response.data
+            if (ingredients == null) return
+          //recupero l'index dell'elemento
+            const index = this.getPizzaIndexById( pizzaId);
+          //recupro l'elemento nell'array by index
+            const pizza = this.pizzas[index];
+          //aggiungo gli ingredienti
+            pizza.ingredients = ingredients; 
+          //sostituisco il vecchio elemento con quello nuovo aggiornato 
+            this.pizzas.splice(index, 1 , pizza);
+            console.log(this.pizzas[index].ingredients);
+        })
+        .catch(error => {
+          console.log(error)
+        })
+    },
+
   },
     mounted() {
      //!PIZZA METHODS
@@ -178,7 +206,9 @@ export default {
          if (allPizza == null) return;
          this.pizzas = allPizza;
          console.log(this.pizzas);
-    });
+    }).catch(error => {
+          console.log(error)
+        });
   }
   
 }

@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/1/ingredienti")
+@RequestMapping("/api/1/ingredient")
 @CrossOrigin("*")
 public class IngredientApiController {
 
@@ -34,7 +34,7 @@ public class IngredientApiController {
 	public List<Ingredient> getIngredientiByPizzaId(@PathVariable("id") int id) {
 		
 		Pizza pizza = pizzaService.findPizzaByID(id).get();
-		//System.err.println(pizza.getIngredients());
+		System.err.println(pizza.getIngredients());
 		return pizza.getIngredients();
 	}
 	
