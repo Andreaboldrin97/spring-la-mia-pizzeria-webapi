@@ -115,7 +115,7 @@ public class IngredientController {
 				//riportiamo gli errori all'interno della view indicata
 				redirectAttributes.addFlashAttribute("errors", bindingResult.getAllErrors());				
 				//ritorniamo al form con gli errori se i dati sono errati
-				return "admin/ingredient/update";			
+				return "admin/ingredient/edit/" + ingredient.getId();			
 			}
 			//azzeriamo l'ingrediente prima di riassegnarlo 
 			//prendiamo l'id

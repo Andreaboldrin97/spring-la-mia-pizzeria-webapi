@@ -121,7 +121,7 @@ public class DrinkController {
 		redirectAttributes.addFlashAttribute("errors", bindingResult.getAllErrors());
 		
 		//ritorniamo al form con gli errori se i dati sono errati
-		return "redirect:admin/drink/store";
+		return "redirect:admin/drink/storeedit/" +drink.getId();
 		}
 
 		try {

@@ -143,7 +143,7 @@ public class PizzaController {
 			redirectAttributes.addFlashAttribute("errors", bindingResult.getAllErrors());
 			
 			//ritorniamo al form con gli errori se i dati sono errati
-			return "redirect:/admin/pizza/store";
+			return "redirect:/admin/pizza/edit/" + pizza.getId();
 			
 			}
 			//metodo per salvare un record
